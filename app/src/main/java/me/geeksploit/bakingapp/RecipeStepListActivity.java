@@ -21,6 +21,7 @@ import java.util.List;
 import me.geeksploit.bakingapp.data.IngredientEntity;
 import me.geeksploit.bakingapp.data.RecipeEntity;
 import me.geeksploit.bakingapp.data.StepEntity;
+import me.geeksploit.bakingapp.util.StringUtils;
 
 /**
  * An activity representing a list of Recipe Steps. This activity
@@ -178,7 +179,7 @@ public class RecipeStepListActivity extends AppCompatActivity {
             } else if (holder instanceof ViewHolder) {
                 ViewHolder stepHolder = (ViewHolder) holder;
                 StepEntity stepEntity = getRecipeStep(position);
-                stepHolder.mIdView.setText(String.valueOf(stepEntity.getId()));
+                stepHolder.mIdView.setText(StringUtils.getStepId(mValues.indexOf(getRecipeStep(position))));
                 stepHolder.mContentView.setText(stepEntity.getShortDescription());
                 stepHolder.itemView.setTag(stepEntity);
                 stepHolder.itemView.setOnClickListener(mOnClickListener);

@@ -11,6 +11,13 @@ public final class StringUtils {
         );
     }
 
+    public static String getStepId(int position) {
+        return String.format(Locale.getDefault(),
+                "%d) ",
+                position + 1
+        );
+    }
+
     public static String getIngredientDescription(float quantity, String measure, String ingredient) {
         if (quantity == (int) quantity) {
             return String.format(Locale.getDefault(),
