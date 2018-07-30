@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Baking App</string>
     <string name="title_recipestep_detail">Recipe Step Detail</string>
+    <string name="title_recipe_ingredients">Recipe Ingredients</string>
+    <string name="title_recipe_ingredients_template">%s Ingredients</string>
     <string name="title_activity_main">Baking App</string>
     <string name="recipe_image_description">recipe image</string>
     <string name="recipe_source_url">https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json</string>
