@@ -16,7 +16,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import me.geeksploit.bakingapp.dummy.DummyContent;
+import me.geeksploit.bakingapp.data.RecipeEntity;
+import me.geeksploit.bakingapp.data.StepEntity;
 
 /**
  * An activity representing a list of Recipe Steps. This activity
@@ -28,11 +29,14 @@ import me.geeksploit.bakingapp.dummy.DummyContent;
  */
 public class RecipeStepListActivity extends AppCompatActivity {
 
+    public static final String EXTRA_RECIPE = "item_id";
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
+    private RecipeEntity mItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,28 +64,34 @@ public class RecipeStepListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
+        if (getIntent().hasExtra(EXTRA_RECIPE)) {
+            // TODO: use a Loader to load content from a content provider.
+            mItem = (RecipeEntity) getIntent().getSerializableExtra(EXTRA_RECIPE);
+            setTitle(mItem.getName());
+        }
+
         View recyclerView = findViewById(R.id.recipestep_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mItem.getSteps(), mTwoPane));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final RecipeStepListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<StepEntity> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+                StepEntity item = (StepEntity) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(RecipeStepDetailFragment.ARG_ITEM_ID, item.id);
+                    arguments.putSerializable(RecipeStepDetailFragment.ARG_ITEM, item);
                     RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -90,7 +100,7 @@ public class RecipeStepListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, RecipeStepDetailActivity.class);
-                    intent.putExtra(RecipeStepDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(RecipeStepDetailFragment.ARG_ITEM, item);
 
                     context.startActivity(intent);
                 }
@@ -98,7 +108,7 @@ public class RecipeStepListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(RecipeStepListActivity parent,
-                                      List<DummyContent.DummyItem> items,
+                                      List<StepEntity> items,
                                       boolean twoPane) {
             mValues = items;
             mParentActivity = parent;
@@ -115,8 +125,8 @@ public class RecipeStepListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mIdView.setText(String.valueOf(mValues.get(position).getId()));
+            holder.mContentView.setText(mValues.get(position).getShortDescription());
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
