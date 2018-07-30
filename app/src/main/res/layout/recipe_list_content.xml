@@ -1,0 +1,58 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/recipe_card_margin"
+    android:elevation="@dimen/recipe_card_elevation"
+    card_view:cardCornerRadius="@dimen/recipe_card_radius">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/recipe_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/recipe_image_height"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/recipe_image_description"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/recipe_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/recipe_name_padding"
+            android:paddingRight="@dimen/recipe_name_padding"
+            android:paddingTop="@dimen/recipe_name_padding"
+            android:textColor="@color/recipe_name"
+            android:textSize="@dimen/recipe_name_size"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@+id/recipe_ingredients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/recipe_name_padding"
+            android:paddingRight="@dimen/recipe_name_padding"
+            android:textSize="@dimen/recipe_info_size"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@+id/recipe_steps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/recipe_steps_padding_bottom"
+            android:paddingLeft="@dimen/recipe_name_padding"
+            android:paddingRight="@dimen/recipe_name_padding"
+            android:textSize="@dimen/recipe_info_size"
+            tools:text="@tools:sample/lorem" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
