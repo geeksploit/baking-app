@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import me.geeksploit.bakingapp.dummy.DummyContent;
+import me.geeksploit.bakingapp.data.StepEntity;
 
 /**
  * A fragment representing a single Recipe Step detail screen.
@@ -23,12 +23,12 @@ public class RecipeStepDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_ITEM = "item_id";
 
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private StepEntity mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -41,16 +41,14 @@ public class RecipeStepDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+        if (getArguments().containsKey(ARG_ITEM)) {
+            // TODO: use a Loader to load content from a content provider.
+            mItem = (StepEntity) getArguments().getSerializable(ARG_ITEM);
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(mItem.getShortDescription());
             }
         }
     }
@@ -62,7 +60,7 @@ public class RecipeStepDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.recipestep_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.recipestep_detail)).setText(mItem.getDescription());
         }
 
         return rootView;
