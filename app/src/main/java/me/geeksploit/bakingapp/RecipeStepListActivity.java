@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import me.geeksploit.bakingapp.data.IngredientEntity;
 import me.geeksploit.bakingapp.data.RecipeEntity;
 import me.geeksploit.bakingapp.data.StepEntity;
 
@@ -76,13 +77,14 @@ public class RecipeStepListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mItem.getSteps(), mTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mItem.getIngredients(), mItem.getSteps(), mTwoPane));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final RecipeStepListActivity mParentActivity;
+        private final List<IngredientEntity> mIngredients;
         private final List<StepEntity> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -108,8 +110,9 @@ public class RecipeStepListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(RecipeStepListActivity parent,
-                                      List<StepEntity> items,
+                                      List<IngredientEntity> ingredients, List<StepEntity> items,
                                       boolean twoPane) {
+            mIngredients = ingredients;
             mValues = items;
             mParentActivity = parent;
             mTwoPane = twoPane;
