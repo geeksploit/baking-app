@@ -1,5 +1,6 @@
 package me.geeksploit.bakingapp;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,11 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.geeksploit.bakingapp.adapter.RecipeGalleryAdapter;
 import me.geeksploit.bakingapp.data.RecipeEntity;
+import me.geeksploit.bakingapp.util.NetworkUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,5 +43,28 @@ public class MainActivity extends AppCompatActivity {
         mRecipeGalleryAdapter = new RecipeGalleryAdapter(this, mRecipes);
         RecyclerView recipeGallery = findViewById(R.id.recipe_gallery);
         recipeGallery.setAdapter(mRecipeGalleryAdapter);
+
+        new AsyncTask<Void, Void, List<RecipeEntity>>() {
+
+            @Override
+            protected List<RecipeEntity> doInBackground(Void... voids) {
+                List<RecipeEntity> recipes = new ArrayList<>();
+                try {
+                    URL url = NetworkUtils.buildRecipesUrl(getString(R.string.recipe_source_url));
+                    recipes.addAll(NetworkUtils.getRecipes(url));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return recipes;
+            }
+
+            @Override
+            protected void onPostExecute(List<RecipeEntity> recipeEntities) {
+                mRecipes.clear();
+                mRecipes.addAll(recipeEntities);
+                mRecipeGalleryAdapter.notifyDataSetChanged();
+            }
+
+        }.execute();
     }
 }
