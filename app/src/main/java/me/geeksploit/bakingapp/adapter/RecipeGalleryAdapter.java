@@ -1,6 +1,7 @@
 package me.geeksploit.bakingapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import me.geeksploit.bakingapp.MainActivity;
 import me.geeksploit.bakingapp.R;
+import me.geeksploit.bakingapp.RecipeStepListActivity;
 import me.geeksploit.bakingapp.data.RecipeEntity;
 
 public final class RecipeGalleryAdapter
@@ -24,12 +26,20 @@ public final class RecipeGalleryAdapter
 
     private final MainActivity mParentActivity;
     private final List<RecipeEntity> mValues;
-    private final View.OnClickListener mOnClickListener;
+    private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            RecipeEntity item = (RecipeEntity) view.getTag();
+            Context context = view.getContext();
+            Intent intent = new Intent(context, RecipeStepListActivity.class);
+            intent.putExtra(RecipeStepListActivity.EXTRA_RECIPE, item);
+            context.startActivity(intent);
+        }
+    };
 
-    public RecipeGalleryAdapter(MainActivity parent, List<RecipeEntity> items, View.OnClickListener clickListener) {
+    public RecipeGalleryAdapter(MainActivity parent, List<RecipeEntity> items) {
         mParentActivity = parent;
         mValues = items;
-        mOnClickListener = clickListener;
     }
 
     @NonNull
