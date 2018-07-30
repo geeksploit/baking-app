@@ -2,6 +2,7 @@ package me.geeksploit.bakingapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -81,12 +83,22 @@ public class RecipeStepListActivity extends AppCompatActivity {
     }
 
     public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+            extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private static final int TYPE_HEADER_INGREDIENTS = 0;
+        private static final int TYPE_ITEM_RECIPE_STEP = 1;
 
         private final RecipeStepListActivity mParentActivity;
         private final List<IngredientEntity> mIngredients;
         private final List<StepEntity> mValues;
         private final boolean mTwoPane;
+        private final View.OnClickListener mOnClickHeaderListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "not implemented yet...", Toast.LENGTH_LONG)
+                        .show();
+            }
+        };
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,24 +132,61 @@ public class RecipeStepListActivity extends AppCompatActivity {
 
         @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recipestep_list_content, parent, false);
-            return new ViewHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view;
+            switch (viewType) {
+                case TYPE_HEADER_INGREDIENTS:
+                    view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.recipe_ingredients_list_content, parent, false);
+                    return new ViewHolderHeader(view);
+                case TYPE_ITEM_RECIPE_STEP:
+                    view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.recipestep_list_content, parent, false);
+                    return new ViewHolder(view);
+                default:
+                    throw new UnsupportedOperationException("unsupported view type");
+            }
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            holder.mIdView.setText(String.valueOf(mValues.get(position).getId()));
-            holder.mContentView.setText(mValues.get(position).getShortDescription());
-
-            holder.itemView.setTag(mValues.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
+        public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
+            if (holder instanceof ViewHolderHeader) {
+                ViewHolderHeader headerHolder = ((ViewHolderHeader) holder);
+                Context context = headerHolder.mLabel.getContext();
+                Resources res = context.getResources();
+                headerHolder.mLabel.setText(res.getQuantityString(
+                        R.plurals.label_ingredients,
+                        mIngredients.size(),
+                        mIngredients.size())
+                );
+                holder.itemView.setTag(mIngredients);
+                holder.itemView.setOnClickListener(mOnClickHeaderListener);
+            } else if (holder instanceof ViewHolder) {
+                ViewHolder stepHolder = (ViewHolder) holder;
+                StepEntity stepEntity = getRecipeStep(position);
+                stepHolder.mIdView.setText(String.valueOf(stepEntity.getId()));
+                stepHolder.mContentView.setText(stepEntity.getShortDescription());
+                stepHolder.itemView.setTag(stepEntity);
+                stepHolder.itemView.setOnClickListener(mOnClickListener);
+            }
         }
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return mValues.size() + 1;
+        }
+
+        private StepEntity getRecipeStep(int position) {
+            return mValues.get(position - 1);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return TYPE_HEADER_INGREDIENTS;
+            } else {
+                return TYPE_ITEM_RECIPE_STEP;
+            }
         }
 
         class ViewHolderHeader extends RecyclerView.ViewHolder {
