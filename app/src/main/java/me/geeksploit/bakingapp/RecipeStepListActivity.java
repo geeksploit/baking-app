@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.List;
@@ -106,8 +105,11 @@ public class RecipeStepListActivity extends AppCompatActivity {
                             .replace(R.id.recipestep_detail_container, fragment)
                             .commit();
                 } else {
-                    Toast.makeText(view.getContext(), "not implemented yet...", Toast.LENGTH_LONG)
-                            .show();
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, RecipeIngredientsActivity.class);
+                    intent.putExtra(Intent.EXTRA_TITLE, mParentActivity.getTitle());
+                    intent.putExtra(IngredientFragment.ARG_INGREDIENTS_LIST, (Serializable) ingredients);
+                    context.startActivity(intent);
                 }
             }
         };

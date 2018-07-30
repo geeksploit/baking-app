@@ -40,6 +40,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RecipeIngredientsActivity"
+            android:label="@string/title_recipe_ingredients"
+            android:parentActivityName=".RecipeStepListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.geeksploit.bakingapp.RecipeStepListActivity" />
+        </activity>
     </application>
 
 </manifest>
