@@ -137,6 +137,15 @@ public class RecipeStepListActivity extends AppCompatActivity {
             return mValues.size();
         }
 
+        class ViewHolderHeader extends RecyclerView.ViewHolder {
+            final TextView mLabel;
+
+            ViewHolderHeader(View view) {
+                super(view);
+                mLabel = view.findViewById(R.id.ingredients_label);
+            }
+        }
+
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mIdView;
             final TextView mContentView;
