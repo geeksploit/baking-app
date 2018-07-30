@@ -8,22 +8,15 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import me.geeksploit.bakingapp.IngredientFragment.OnListFragmentInteractionListener;
-import me.geeksploit.bakingapp.dummy.DummyContent.DummyItem;
+import me.geeksploit.bakingapp.data.IngredientEntity;
+import me.geeksploit.bakingapp.util.StringUtils;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final List<IngredientEntity> mValues;
 
-    public IngredientAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    IngredientAdapter(List<IngredientEntity> items) {
         mValues = items;
-        mListener = listener;
     }
 
     @Override
@@ -35,20 +28,15 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        IngredientEntity item = mValues.get(position);
+        holder.mItem = item;
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+        holder.mIdView.setText(StringUtils.getIngredientId(position));
+        holder.mContentView.setText(StringUtils.getIngredientDescription(
+                item.getQuantity(),
+                item.getMeasure(),
+                item.getIngredient())
+        );
     }
 
     @Override
@@ -60,7 +48,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        IngredientEntity mItem;
 
         public ViewHolder(View view) {
             super(view);

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.List;
 
 import me.geeksploit.bakingapp.data.IngredientEntity;
@@ -95,8 +96,19 @@ public class RecipeStepListActivity extends AppCompatActivity {
         private final View.OnClickListener mOnClickHeaderListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "not implemented yet...", Toast.LENGTH_LONG)
-                        .show();
+                List<IngredientEntity> ingredients = (List<IngredientEntity>) view.getTag();
+                if (mTwoPane) {
+                    Bundle arguments = new Bundle();
+                    arguments.putSerializable(IngredientFragment.ARG_INGREDIENTS_LIST, (Serializable) ingredients);
+                    IngredientFragment fragment = new IngredientFragment();
+                    fragment.setArguments(arguments);
+                    mParentActivity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.recipestep_detail_container, fragment)
+                            .commit();
+                } else {
+                    Toast.makeText(view.getContext(), "not implemented yet...", Toast.LENGTH_LONG)
+                            .show();
+                }
             }
         };
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
