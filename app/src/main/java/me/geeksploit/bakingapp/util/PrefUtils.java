@@ -24,6 +24,7 @@ public final class PrefUtils {
     }
 
     public static String getWidgetRecipeName(Context c) {
-        return getPrefs(c).getString(c.getString(R.string.pref_widget_recipe_name_key), "");
+        return getPrefs(c).getString(c.getString(R.string.pref_widget_recipe_name_key),
+                c.getString(R.string.appwidget_text));
     }
 }
