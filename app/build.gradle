@@ -26,6 +26,9 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
 
+    // ExoPlayer - an application level media player for Android
+    implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
+
     // Gson - a Java serialization/deserialization library to convert Java Objects into JSON and back
     implementation 'com.google.code.gson:gson:2.8.5'
 
