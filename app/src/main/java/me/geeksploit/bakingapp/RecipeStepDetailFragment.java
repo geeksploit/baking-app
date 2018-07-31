@@ -1,6 +1,8 @@
 package me.geeksploit.bakingapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,6 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
 import me.geeksploit.bakingapp.data.StepEntity;
 
@@ -25,10 +40,9 @@ public class RecipeStepDetailFragment extends Fragment {
      */
     public static final String ARG_ITEM = "item_id";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
     private StepEntity mItem;
+    private PlayerView mPlayerView;
+    private SimpleExoPlayer mExoPlayer;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,11 +72,44 @@ public class RecipeStepDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipestep_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
+        mPlayerView = rootView.findViewById(R.id.step_video);
+
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.recipestep_detail)).setText(mItem.getDescription());
+            if (!mItem.getVideoURL().isEmpty()) {
+                initializePlayer(Uri.parse(mItem.getVideoURL()));
+            }
         }
 
         return rootView;
+    }
+
+    /**
+     * Initialize ExoPlayer
+     *
+     * @param mediaUri the Uri of the sample to play
+     */
+    private void initializePlayer(Uri mediaUri) {
+        if (mExoPlayer != null) return;
+
+        Context context = getContext();
+
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelection.Factory videoTrackSelectionFactory =
+                new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        DefaultTrackSelector trackSelector =
+                new DefaultTrackSelector(videoTrackSelectionFactory);
+
+        mExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector);
+
+        String userAgent = getString(R.string.app_name);
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, userAgent);
+        MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(mediaUri);
+
+        mExoPlayer.prepare(mediaSource);
+
+        mPlayerView.setPlayer(mExoPlayer);
+        mPlayerView.setVisibility(View.VISIBLE);
     }
 }
