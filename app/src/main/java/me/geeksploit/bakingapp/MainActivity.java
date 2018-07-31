@@ -1,7 +1,12 @@
 package me.geeksploit.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +22,11 @@ import java.util.List;
 import me.geeksploit.bakingapp.adapter.RecipeGalleryAdapter;
 import me.geeksploit.bakingapp.data.RecipeEntity;
 import me.geeksploit.bakingapp.util.NetworkUtils;
+import me.geeksploit.bakingapp.util.PrefUtils;
+import me.geeksploit.bakingapp.widget.IngredientsWidget;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private RecipeGalleryAdapter mRecipeGalleryAdapter;
     private List<RecipeEntity> mRecipes;
@@ -34,7 +42,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                int randomId = (int) (Math.random() * mRecipes.size());
+                RecipeEntity newRecipe = mRecipes.get(randomId);
+                PrefUtils.setWidgetRecipe(getApplicationContext(), newRecipe.getId(), newRecipe.getName());
+
+                Snackbar.make(view, getString(R.string.message_widget_recipe_new, newRecipe.getName()), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -66,5 +78,29 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }.execute();
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_widget_recipe_id_key))) {
+            Intent intent = new Intent(this, IngredientsWidget.class);
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, IngredientsWidget.class));
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+
+            this.sendBroadcast(intent);
+        }
     }
 }
