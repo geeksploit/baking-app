@@ -18,10 +18,10 @@ import me.geeksploit.bakingapp.util.StringUtils;
 
 public class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    Context mContext;
-    private List<IngredientEntity> mIngredients = new ArrayList<>();
+    private Context mContext;
+    private List<IngredientEntity> mIngredients;
 
-    public GridRemoteViewsFactory(Context applicationContext) {
+    GridRemoteViewsFactory(Context applicationContext) {
         this.mContext = applicationContext;
         mIngredients = new ArrayList<>();
     }
