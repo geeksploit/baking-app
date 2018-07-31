@@ -20,5 +20,6 @@
 
     <string name="pref_widget_recipe_id_key" translatable="false">widget_recipe_id</string>
     <string name="pref_widget_recipe_name_key" translatable="false">widget_recipe_name</string>
+    <string name="message_widget_recipe_new">Marked as favorite: %s</string>
 
 </resources>

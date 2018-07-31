@@ -22,6 +22,7 @@ import java.util.List;
 import me.geeksploit.bakingapp.adapter.RecipeGalleryAdapter;
 import me.geeksploit.bakingapp.data.RecipeEntity;
 import me.geeksploit.bakingapp.util.NetworkUtils;
+import me.geeksploit.bakingapp.util.PrefUtils;
 import me.geeksploit.bakingapp.widget.IngredientsWidget;
 
 public class MainActivity extends AppCompatActivity
@@ -41,7 +42,11 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                int randomId = (int) (Math.random() * mRecipes.size());
+                RecipeEntity newRecipe = mRecipes.get(randomId);
+                PrefUtils.setWidgetRecipe(getApplicationContext(), newRecipe.getId(), newRecipe.getName());
+
+                Snackbar.make(view, getString(R.string.message_widget_recipe_new, newRecipe.getName()), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
