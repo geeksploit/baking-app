@@ -21,5 +21,7 @@
     <string name="pref_widget_recipe_id_key" translatable="false">widget_recipe_id</string>
     <string name="pref_widget_recipe_name_key" translatable="false">widget_recipe_name</string>
     <string name="message_widget_recipe_new">Marked as favorite: %s</string>
+    <string name="text_grocery_list">%s grocery list:</string>
+    <string name="message_error_no_ingredients">There are no ingredients to share</string>
 
 </resources>

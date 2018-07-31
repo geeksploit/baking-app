@@ -11,6 +11,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import me.geeksploit.bakingapp.data.IngredientEntity;
+import me.geeksploit.bakingapp.util.StringUtils;
+
 /**
  * An activity representing a Recipe Ingredients detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
@@ -18,6 +24,8 @@ import android.view.View;
  * in a {@link RecipeStepListActivity}.
  */
 public class RecipeIngredientsActivity extends AppCompatActivity {
+
+    List<IngredientEntity> mIngredients = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +38,16 @@ public class RecipeIngredientsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
+                if (mIngredients != null && mIngredients.size() > 0) {
+                    String groceryList = StringUtils.getIngredientsGroceryList(getApplicationContext(), getTitle().toString(), mIngredients);
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, groceryList);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                    return;
+                }
+                Snackbar.make(view, R.string.message_error_no_ingredients, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -53,6 +70,7 @@ public class RecipeIngredientsActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+            mIngredients = (List<IngredientEntity>) getIntent().getSerializableExtra(IngredientFragment.ARG_INGREDIENTS_LIST);
             Bundle arguments = new Bundle();
             arguments.putSerializable(IngredientFragment.ARG_INGREDIENTS_LIST,
                     getIntent().getSerializableExtra(IngredientFragment.ARG_INGREDIENTS_LIST));

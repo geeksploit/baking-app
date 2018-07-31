@@ -1,6 +1,12 @@
 package me.geeksploit.bakingapp.util;
 
+import android.content.Context;
+
+import java.util.List;
 import java.util.Locale;
+
+import me.geeksploit.bakingapp.R;
+import me.geeksploit.bakingapp.data.IngredientEntity;
 
 public final class StringUtils {
 
@@ -32,5 +38,16 @@ public final class StringUtils {
                     measure,
                     ingredient);
         }
+    }
+
+    public static String getIngredientsGroceryList(Context c, String title, List<IngredientEntity> ingredients) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(c.getString(R.string.text_grocery_list, title));
+        for (IngredientEntity item : ingredients) {
+            String ingredientDescription = StringUtils.getIngredientDescription(item.getQuantity(), item.getMeasure(), item.getIngredient());
+            sb.append(System.getProperty("line.separator"));
+            sb.append(ingredientDescription);
+        }
+        return sb.toString();
     }
 }
