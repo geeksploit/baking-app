@@ -1,9 +1,16 @@
 package me.geeksploit.bakingapp.widget;
 
+import android.content.Context;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 public final class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
+
+    Context mContext;
+
+    public GridRemoteViewsFactory(Context applicationContext) {
+        this.mContext = applicationContext;
+    }
 
     @Override
     public void onCreate() {
