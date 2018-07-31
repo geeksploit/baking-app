@@ -44,16 +44,16 @@ public final class GridRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 }
