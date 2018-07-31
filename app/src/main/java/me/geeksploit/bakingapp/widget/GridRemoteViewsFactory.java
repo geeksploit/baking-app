@@ -14,6 +14,7 @@ import me.geeksploit.bakingapp.data.IngredientEntity;
 import me.geeksploit.bakingapp.data.RecipeEntity;
 import me.geeksploit.bakingapp.util.NetworkUtils;
 import me.geeksploit.bakingapp.util.PrefUtils;
+import me.geeksploit.bakingapp.util.StringUtils;
 
 public class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
@@ -62,7 +63,16 @@ public class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
 
     @Override
     public RemoteViews getViewAt(int i) {
-        return null;
+        IngredientEntity ingredient = mIngredients.get(i);
+
+        RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.ingredients_widget_list_content);
+        views.setTextViewText(R.id.ingredients_widget_item_text, StringUtils.getIngredientDescription(
+                ingredient.getQuantity(),
+                ingredient.getMeasure(),
+                ingredient.getIngredient())
+        );
+
+        return views;
     }
 
     @Override
