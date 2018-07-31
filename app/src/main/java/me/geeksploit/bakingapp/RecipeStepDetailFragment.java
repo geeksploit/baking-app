@@ -84,6 +84,12 @@ public class RecipeStepDetailFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+    }
+
     /**
      * Initialize ExoPlayer
      *
@@ -111,5 +117,12 @@ public class RecipeStepDetailFragment extends Fragment {
 
         mPlayerView.setPlayer(mExoPlayer);
         mPlayerView.setVisibility(View.VISIBLE);
+    }
+
+    private void releasePlayer() {
+        if (mExoPlayer == null) return;
+        mExoPlayer.stop();
+        mExoPlayer.release();
+        mExoPlayer = null;
     }
 }
