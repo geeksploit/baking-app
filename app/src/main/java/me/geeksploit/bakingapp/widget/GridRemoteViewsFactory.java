@@ -4,12 +4,25 @@ import android.content.Context;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-public final class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import me.geeksploit.bakingapp.R;
+import me.geeksploit.bakingapp.data.IngredientEntity;
+import me.geeksploit.bakingapp.data.RecipeEntity;
+import me.geeksploit.bakingapp.util.NetworkUtils;
+import me.geeksploit.bakingapp.util.PrefUtils;
+
+public class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     Context mContext;
+    private List<IngredientEntity> mIngredients = new ArrayList<>();
 
     public GridRemoteViewsFactory(Context applicationContext) {
         this.mContext = applicationContext;
+        mIngredients = new ArrayList<>();
     }
 
     @Override
@@ -17,9 +30,24 @@ public final class GridRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
     }
 
+    /**
+     * Note: expensive tasks can be safely performed synchronously within this method
+     * In the interim, the old data will be displayed within the widget.
+     */
     @Override
     public void onDataSetChanged() {
-
+        try {
+            URL url = NetworkUtils.buildRecipesUrl(mContext.getString(R.string.recipe_source_url));
+            List<RecipeEntity> newRecipes = NetworkUtils.getRecipes(url);
+            int favoriteRecipe = PrefUtils.getWidgetRecipeId(mContext);
+            for (RecipeEntity recipe : newRecipes)
+                if (recipe.getId() == favoriteRecipe) {
+                    mIngredients = recipe.getIngredients();
+                    break;
+                }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -29,7 +57,7 @@ public final class GridRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
     @Override
     public int getCount() {
-        return 0;
+        return mIngredients.size();
     }
 
     @Override
