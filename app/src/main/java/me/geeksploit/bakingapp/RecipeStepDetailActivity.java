@@ -34,6 +34,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        fab.setVisibility(View.GONE);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
