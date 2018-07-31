@@ -22,6 +22,7 @@ import java.util.List;
 import me.geeksploit.bakingapp.data.IngredientEntity;
 import me.geeksploit.bakingapp.data.RecipeEntity;
 import me.geeksploit.bakingapp.data.StepEntity;
+import me.geeksploit.bakingapp.util.PrefUtils;
 import me.geeksploit.bakingapp.util.StringUtils;
 
 /**
@@ -56,7 +57,8 @@ public class RecipeStepListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                PrefUtils.setWidgetRecipe(getApplicationContext(), mItem.getId(), mItem.getName());
+                Snackbar.make(view, getString(R.string.message_widget_recipe_new, mItem.getName()), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
