@@ -24,5 +24,6 @@
     <string name="text_grocery_list">%s grocery list:</string>
     <string name="message_error_no_ingredients">There are no ingredients to share</string>
     <string name="message_error_no_recipes">There are no recipes to display</string>
+    <string name="description_step_image">Recipe step illustration</string>
 
 </resources>

@@ -24,4 +24,11 @@
         android:textIsSelectable="true"
         tools:text="@tools:sample/lorem/random" />
 
+    <ImageView
+        android:id="@+id/step_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/description_step_image" />
+
 </LinearLayout>
