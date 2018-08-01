@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity
 
     private RecipeGalleryAdapter mRecipeGalleryAdapter;
     private List<RecipeEntity> mRecipes;
+    private FloatingActionButton mFab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +40,16 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mRecipes.size() <= 0) {
+                    Snackbar.make(view, R.string.message_error_no_recipes, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+                }
+
                 int randomId = (int) (Math.random() * mRecipes.size());
                 RecipeEntity newRecipe = mRecipes.get(randomId);
                 PrefUtils.setWidgetRecipe(getApplicationContext(), newRecipe.getId(), newRecipe.getName());
@@ -75,6 +83,12 @@ public class MainActivity extends AppCompatActivity
                 mRecipes.clear();
                 mRecipes.addAll(recipeEntities);
                 mRecipeGalleryAdapter.notifyDataSetChanged();
+
+                if (mRecipes.size() > 0) {
+                    mFab.setVisibility(View.VISIBLE);
+                } else {
+                    mFab.setVisibility(View.GONE);
+                }
             }
 
         }.execute();
