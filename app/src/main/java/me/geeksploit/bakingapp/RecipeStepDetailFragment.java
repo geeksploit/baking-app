@@ -10,8 +10,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -43,6 +46,7 @@ public class RecipeStepDetailFragment extends Fragment {
     private StepEntity mItem;
     private PlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
+    private ImageView mImage;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -73,11 +77,22 @@ public class RecipeStepDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.recipestep_detail, container, false);
 
         mPlayerView = rootView.findViewById(R.id.step_video);
+        mImage = rootView.findViewById(R.id.step_image);
 
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.recipestep_detail)).setText(mItem.getDescription());
             if (!mItem.getVideoURL().isEmpty()) {
                 initializePlayer(Uri.parse(mItem.getVideoURL()));
+            }
+            if (!mItem.getThumbnailURL().isEmpty()) {
+                Context context = getContext();
+                RequestOptions options = new RequestOptions()
+                        .placeholder(R.drawable.placeholder_recipe_image)
+                        .error(R.drawable.placeholder_recipe_image);
+                Glide.with(context)
+                        .load(mItem.getThumbnailURL())
+                        .apply(options)
+                        .into(mImage);
             }
         }
 
