@@ -13,6 +13,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class ChooseRecipeBasicTest {
@@ -31,5 +32,13 @@ public class ChooseRecipeBasicTest {
         onView(withId(R.id.recipe_gallery)).check(matches(isDisplayed()));
         onView(withId(R.id.recipe_gallery)).perform(actionOnItemAtPosition(0, click()));
         onView(withId(R.id.recipestep_list)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void showRecipeFavoriteSnackbar() {
+        onView(withId(R.id.recipe_gallery)).perform(actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.fab)).check(matches(isDisplayed()));
+        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.snackbar_text)).check(matches(withText("Marked as favorite: Nutella Pie")));
     }
 }
