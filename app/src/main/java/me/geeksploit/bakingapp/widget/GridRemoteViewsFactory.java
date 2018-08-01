@@ -1,6 +1,7 @@
 package me.geeksploit.bakingapp.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -71,6 +72,8 @@ public class GridRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
                 ingredient.getMeasure(),
                 ingredient.getIngredient())
         );
+
+        views.setOnClickFillInIntent(R.id.ingredients_widget_item_text, new Intent());
 
         return views;
     }
