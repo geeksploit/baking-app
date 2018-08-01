@@ -60,7 +60,7 @@ public final class RecipeGalleryAdapter
                 .placeholder(R.drawable.placeholder_recipe_image)
                 .error(R.drawable.placeholder_recipe_image);
         Glide.with(context)
-                .load(R.drawable.placeholder_recipe_image)
+                .load(mValues.get(position).getImage())
                 .apply(options)
                 .into(holder.mImageView);
 
