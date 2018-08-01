@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import me.geeksploit.bakingapp.MainActivity;
@@ -15,6 +16,8 @@ import me.geeksploit.bakingapp.util.PrefUtils;
  * Implementation of App Widget functionality.
  */
 public class IngredientsWidget extends AppWidgetProvider {
+
+    public static String EXTRA_INGREDIENT = "extra_widget_ingredient";
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
@@ -29,7 +32,12 @@ public class IngredientsWidget extends AppWidgetProvider {
         Intent intent = new Intent(context,MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-        views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);
+        views.setOnClickPendingIntent(R.id.appwidget_root, pendingIntent);
+
+        PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(intent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setPendingIntentTemplate(R.id.appwidget_ingredient_gallery, clickPendingIntentTemplate);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
