@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -46,6 +47,7 @@ public class RecipeStepDetailFragment extends Fragment {
     private StepEntity mItem;
     private PlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
+    private long mPlayerPosition;
     private ImageView mImage;
 
     /**
@@ -74,6 +76,10 @@ public class RecipeStepDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            mPlayerPosition = savedInstanceState.getLong("test");
+        }
+
         View rootView = inflater.inflate(R.layout.recipestep_detail, container, false);
 
         mPlayerView = rootView.findViewById(R.id.step_video);
@@ -81,9 +87,6 @@ public class RecipeStepDetailFragment extends Fragment {
 
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.recipestep_detail)).setText(mItem.getDescription());
-            if (!mItem.getVideoURL().isEmpty()) {
-                initializePlayer(Uri.parse(mItem.getVideoURL()));
-            }
             if (!mItem.getThumbnailURL().isEmpty()) {
                 Context context = getContext();
                 RequestOptions options = new RequestOptions()
@@ -99,10 +102,34 @@ public class RecipeStepDetailFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mItem == null || mItem.getVideoURL().isEmpty()) return;
+
+        initializePlayer(Uri.parse(mItem.getVideoURL()));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mExoPlayer == null) return;
+        mPlayerPosition = mExoPlayer.getCurrentPosition();
+    }
+
     @Override
     public void onStop() {
         super.onStop();
         releasePlayer();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong("test", mPlayerPosition);
     }
 
     /**
@@ -128,7 +155,10 @@ public class RecipeStepDetailFragment extends Fragment {
         MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(mediaUri);
 
-        mExoPlayer.prepare(mediaSource);
+        if (mPlayerPosition != C.TIME_UNSET) {
+            mExoPlayer.seekTo(mPlayerPosition);
+        }
+        mExoPlayer.prepare(mediaSource, false, false);
 
         mPlayerView.setPlayer(mExoPlayer);
         mPlayerView.setVisibility(View.VISIBLE);
